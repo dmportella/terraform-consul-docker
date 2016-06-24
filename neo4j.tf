@@ -1,13 +1,13 @@
 # Create a container
 resource "docker_container" "neo4j" {
 	count = 1
-    image = "${docker_image.neo4j.name}"
-    name = "neo4j"
+	image = "${docker_image.neo4j.name}"
+	name = "neo4j"
 
-    ports {
-    	internal = 7474
-    	external = 7474
-    }
+	ports {
+		internal = 7474
+		external = 7474
+	}
 
 	restart = "always"
 	memory = 512
@@ -24,7 +24,7 @@ resource "docker_container" "neo4j" {
 }
 
 resource "docker_image" "neo4j" {
-    name = "neo4j:3.0.2"
+	name = "neo4j:3.0.2"
 }
 
 output "neo4j_ip" {

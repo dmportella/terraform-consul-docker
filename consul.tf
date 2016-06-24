@@ -1,9 +1,9 @@
 # Create a container
 resource "docker_container" "consul" {
 	count = 1
-    image = "${docker_image.consul.name}"
-    name = "consul-master"
-    hostname = "consul-master"
+	image = "${docker_image.consul.name}"
+	name = "consul-master"
+	hostname = "consul-master"
 
 	restart = "always"
 	memory = 512
@@ -86,7 +86,7 @@ resource "docker_container" "consul_agents" {
 }
 
 resource "docker_image" "consul" {
-    name = "consul:v0.6.4"
+	name = "consul:v0.6.4"
 }
 
 output "consul_ip" {
