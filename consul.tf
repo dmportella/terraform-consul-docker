@@ -3,7 +3,7 @@ resource "docker_container" "consul" {
 	count = 1
     image = "${docker_image.consul.name}"
     name = "consul-master"
-    name = "consul-master"
+    hostname = "consul-master"
 
 	restart = "always"
 	memory = 512
