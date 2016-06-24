@@ -11,17 +11,27 @@ resource "docker_container" "elastic" {
 		type = "elastic"
 	}
 
-	volumes {
-		container_path  = "/usr/share/elasticsearch/data"
-		host_path = "/home/dmportella/_volumes/elastic/data"
-		read_only = false
+	ports {
+		internal = 9300
+		external = 9300
 	}
 
-	volumes {
-		container_path  = "/usr/share/elasticsearch/config"
-		host_path = "/home/dmportella/_volumes/elastic/config"
-		read_only = false
+	ports {
+		internal = 9200
+		external = 9200
 	}
+
+#	volumes {
+#		container_path  = "/usr/share/elasticsearch/data"
+#		host_path = "/home/dmportella/_volumes/elastic/data"
+#		read_only = false
+#	}
+#
+#	volumes {
+#		container_path  = "/usr/share/elasticsearch/config"
+#		host_path = "/home/dmportella/_volumes/elastic/config"
+#		read_only = false
+#	}
 }
 
 resource "docker_image" "elastic" {
