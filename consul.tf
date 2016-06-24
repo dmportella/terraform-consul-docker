@@ -3,7 +3,8 @@ resource "docker_container" "consul" {
 	count = 1
     image = "${docker_image.consul.name}"
     name = "consul-master"
-    
+    name = "consul-master"
+
 	restart = "always"
 	memory = 512
 
@@ -69,9 +70,10 @@ resource "docker_container" "consul" {
 }
 
 resource "docker_container" "consul_agents" {
-	count = 2
+	count = 4
 	image = "${docker_image.consul.name}"
 	name = "consul-agent-${format("%02d", count.index+1)}"
+	hostname = "consul-agent-${format("%02d", count.index+1)}"
 	
 	labels {
 		type = "consul agent"

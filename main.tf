@@ -4,5 +4,5 @@ variable "environment" {
 
 # Configure the Docker provider
 provider "docker" {
-    host = "tcp://0.0.0.0:2375/"
+    host = "unix:///var/run/docker.sock"
 }
