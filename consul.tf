@@ -7,6 +7,7 @@ resource "docker_container" "consul" {
 
 	restart = "always"
 	memory = 512
+	privileged = true
 
 	labels {
 		type = "consul"
@@ -74,6 +75,11 @@ resource "docker_container" "consul_agents" {
 	image = "${docker_image.consul.name}"
 	name = "consul-agent-${format("%02d", count.index+1)}"
 	hostname = "consul-agent-${format("%02d", count.index+1)}"
+	dns =["${docker_container.consul.ip_address}"]
+
+	#dns_opts =["rotate"]
+
+	#dns_search =["consul"]
 	
 	labels {
 		type = "consul agent"
@@ -91,4 +97,8 @@ resource "docker_image" "consul" {
 
 output "consul_ip" {
 	value = "${docker_container.consul.ip_address}"
+}
+
+resource "null_resource" "consule_provisioned" {
+	depends_on = ["docker_container.consul", "docker_container.consul_agents"]
 }
