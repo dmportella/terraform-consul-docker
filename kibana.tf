@@ -7,6 +7,10 @@ resource "docker_container" "kibana" {
 	restart = "always"
 	memory = 512
 
+	dns =["172.17.0.1"]
+
+	env = ["ELASTICSEARCH_URL=http://elastic.service.consul:9200"]
+
 	ports {
 		internal = 5601
 		external = 5601
@@ -15,8 +19,6 @@ resource "docker_container" "kibana" {
 	labels {
 		type = "kibana"
 	}
-
-	links = ["${docker_container.elastic.name}:elasticsearch"]
 }
 
 resource "docker_image" "kibana" {

@@ -57,6 +57,19 @@ resource "docker_container" "consul" {
 
 	ports {
 		internal = 8600
+		external = 53
+		ip = "172.17.0.1"
+	}
+
+	ports {
+		internal = 8600
+		external = 53
+		protocol = "udp"
+		ip = "172.17.0.1"
+	}
+
+	ports {
+		internal = 8600
 		external = 8600
 		protocol = "udp"
 	}
@@ -75,11 +88,6 @@ resource "docker_container" "consul_agents" {
 	image = "${docker_image.consul.name}"
 	name = "consul-agent-${format("%02d", count.index+1)}"
 	hostname = "consul-agent-${format("%02d", count.index+1)}"
-	dns =["${docker_container.consul.ip_address}"]
-
-	#dns_opts =["rotate"]
-
-	#dns_search =["consul"]
 	
 	labels {
 		type = "consul agent"
@@ -99,6 +107,22 @@ output "consul_ip" {
 	value = "${docker_container.consul.ip_address}"
 }
 
-resource "null_resource" "consule_provisioned" {
+output "consul_agent_1_ip" {
+	value = "${docker_container.consul_agents.0.ip_address}"
+}
+
+output "consul_agent_2_ip" {
+	value = "${docker_container.consul_agents.1.ip_address}"
+}
+
+output "consul_agent_3_ip" {
+	value = "${docker_container.consul_agents.2.ip_address}"
+}
+
+output "consul_agent_4_ip" {
+	value = "${docker_container.consul_agents.3.ip_address}"
+}
+
+resource "null_resource" "consul_provisioned" {
 	depends_on = ["docker_container.consul", "docker_container.consul_agents"]
 }

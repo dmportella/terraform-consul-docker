@@ -6,7 +6,7 @@ provider "consul" {
 }
 
 resource "consul_keys" "example_key" {
-	depends_on = ["null_resource.consule_provisioned"]
+	depends_on = ["null_resource.consul_provisioned"]
 	datacenter = "dc1"
 	key {
 		name  = "feature-switch"
