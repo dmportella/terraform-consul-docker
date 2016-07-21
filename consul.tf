@@ -16,7 +16,7 @@ resource "docker_container" "consul" {
 	ports {
 		internal = 8500
 		external = 8500
-		ip = "10.44.22.47"
+		ip = "127.0.0.1"
 	}
 
 	ports {
