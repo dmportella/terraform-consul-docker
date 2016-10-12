@@ -38,17 +38,12 @@ resource "docker_container" "consul" {
 		ip = "172.17.0.1"
 	}
 
-	volumes {
-		container_path  = "/consul/data"
-		host_path = "/home/dmportella/_volumes/consul"
-		read_only = false
-	}
-
-	command = ["agent", "-dev", "-client=0.0.0.0", "-bind=0.0.0.0","-bootstrap-expect=1", "-ui"]
+	command = ["agent", "-server", "-client=0.0.0.0", "-bind=0.0.0.0", "-ui", "-bootstrap-expect=1"]
 }
 
 resource "docker_container" "consul_servers" {
-	count = 2
+	depends_on = ["docker_container.consul"]
+	count = 3
 	image = "${docker_image.consul.name}"
 	name = "consul-server-${format("%02d", count.index+1)}"
 	hostname = "consul-server-${format("%02d", count.index+1)}"
@@ -60,27 +55,11 @@ resource "docker_container" "consul_servers" {
 	restart = "always"
 	memory = 512
 
-	command = ["agent", "-dev", "-server","-join=${docker_container.consul.ip_address}"]
-}
-
-resource "docker_container" "consul_agents" {
-	count = 1
-	image = "${docker_image.consul.name}"
-	name = "consul-agent-${format("%02d", count.index+1)}"
-	hostname = "consul-agent-${format("%02d", count.index+1)}"
-	
-	labels {
-		type = "consul agent"
-	}
-
-	restart = "always"
-	memory = 512
-
-	command = ["agent","-join=${docker_container.consul.ip_address}"]
+	command = ["agent", "-server", "-join=${docker_container.consul.ip_address}", "-retry-join=${docker_container.consul.ip_address}"]
 }
 
 resource "docker_image" "consul" {
-	name = "consul:v0.6.4"
+	name = "consul:0.7.0"
 }
 
 output "consul_master_ip" {
@@ -91,15 +70,10 @@ output "consul_servers" {
 	value = "${join(",", docker_container.consul_servers.*.ip_address)}"
 }
 
-output "consul_host_agent" {
-	value = "${docker_container.consul_agents.ip_address}"
-}
-
 resource "null_resource" "consul_provisioned" {
 	triggers {
 		cluster_master = "${docker_container.consul.ip_address}"
     	cluster_servers = "${join(",", docker_container.consul_servers.*.ip_address)}"
-    	host_agent = "${docker_container.consul_agents.ip_address}"
   	}
-	depends_on = ["docker_container.consul", "docker_container.consul_servers", "docker_container.consul_agents"]
+	depends_on = ["docker_container.consul", "docker_container.consul_servers"]//, "docker_container.consul_agents"]
 }

@@ -1,0 +1,81 @@
+{
+	"variables": [],
+	"info": {
+		"name": "CONSUL",
+		"_postman_id": "fbfff5fb-6c6d-d708-2e52-fc643b073517",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET LEADER",
+			"request": {
+				"url": "http://172.17.0.2:8500/v1/status/leader",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GET PEERS",
+			"request": {
+				"url": "http://172.17.0.2:8500/v1/status/peers",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GET SERVICES",
+			"request": {
+				"url": "http://localhost:8500/v1/agent/services",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "PUT SERVICE",
+			"request": {
+				"url": "http://localhost:8500/v1/agent/service/register",
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ID\": \"elastic3\",\n  \"Name\": \"elastic\",\n  \"Address\": \"172.17.0.9\",\n  \"Port\": 9200,\n  \"EnableTagOverride\": false, \n  \"Check\": {\n    \"DeregisterCriticalServiceAfter\": \"90m\",\n    \"HTTP\": \"http://172.17.0.9:9200/_cluster/health?pretty=true\",\n    \"Interval\": \"10s\",\n    \"TTL\": \"15s\"\n  }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE SERVICE",
+			"request": {
+				"url": "http://localhost:8500/v1/agent/service/deregister/name",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

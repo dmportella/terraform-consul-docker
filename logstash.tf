@@ -17,13 +17,15 @@ resource "docker_container" "logstash" {
 
 	volumes {
 		container_path  = "/config-dir"
-		host_path = "/home/dmportella/_volumes/logstash/config"
-		read_only = false
+		host_path = "/home/dmportella/_workspaces/terraform/consul/configs/logstash/"
+		read_only = true
 	}
+
+	command = ["logstash", "-f", "/config-dir/logstash.config"]
 }
 
 resource "docker_image" "logstash" {
-	name = "logstash:2.3.3-1"
+	name = "logstash:2.4.0"
 }
 
 output "logstash_ip" {

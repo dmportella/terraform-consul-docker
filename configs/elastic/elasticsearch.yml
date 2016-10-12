@@ -1,0 +1,12 @@
+cluster.name: consul_docker_terraform_elastic
+
+network.host: 0.0.0.0
+
+discovery.zen.fd.ping_timeout: 30s
+
+discovery.zen.minimum_master_nodes: 2
+
+discovery.zen.ping.multicast.enabled: true
+
+discovery.zen.ping.unicast.hosts: ["elastic-01.service.consul", "elastic-02.service.consul", "elastic-03.service.consul"]
+  
