@@ -6,6 +6,7 @@ provider "consul" {
 }
 
 resource "consul_service" "elastic-01" {
+    depends_on = ["null_resource.consul_provisioned"]
     address = "${docker_container.elastic.0.ip_address}"
     name = "elastic-01"
     port = 9200
@@ -13,6 +14,7 @@ resource "consul_service" "elastic-01" {
 }
 
 resource "consul_service" "elastic-02" {
+    depends_on = ["null_resource.consul_provisioned"]
     address = "${docker_container.elastic.1.ip_address}"
     name = "elastic-02"
     port = 9200
@@ -20,6 +22,7 @@ resource "consul_service" "elastic-02" {
 }
 
 resource "consul_service" "elastic-03" {
+    depends_on = ["null_resource.consul_provisioned"]
     address = "${docker_container.elastic.2.ip_address}"
     name = "elastic-03"
     port = 9200
@@ -27,6 +30,7 @@ resource "consul_service" "elastic-03" {
 }
 
 resource "consul_service" "elastic-04" {
+    depends_on = ["null_resource.consul_provisioned"]
     address = "${docker_container.elastic.3.ip_address}"
     name = "elastic-04"
     port = 9200
@@ -34,6 +38,7 @@ resource "consul_service" "elastic-04" {
 }
 
 resource "consul_service" "elastic-cluster-01" {
+    depends_on = ["null_resource.consul_provisioned"]
     address = "${docker_container.elastic.0.ip_address}"
     name = "elastic"
     port = 9200
@@ -41,6 +46,7 @@ resource "consul_service" "elastic-cluster-01" {
 }
 
 resource "consul_service" "elastic-cluster-02" {
+    depends_on = ["null_resource.consul_provisioned"]
     address = "${docker_container.elastic.1.ip_address}"
     name = "elastic"
     port = 9200
@@ -48,6 +54,7 @@ resource "consul_service" "elastic-cluster-02" {
 }
 
 resource "consul_service" "elastic-cluster-03" {
+    depends_on = ["null_resource.consul_provisioned"]
     address = "${docker_container.elastic.2.ip_address}"
     name = "elastic"
     port = 9200
@@ -55,6 +62,7 @@ resource "consul_service" "elastic-cluster-03" {
 }
 
 resource "consul_service" "elastic-cluster-04" {
+    depends_on = ["null_resource.consul_provisioned"]
     address = "${docker_container.elastic.3.ip_address}"
     name = "elastic"
     port = 9200
@@ -62,6 +70,7 @@ resource "consul_service" "elastic-cluster-04" {
 }
 
 resource "consul_service" "kibana" {
+    depends_on = ["null_resource.consul_provisioned"]
     address = "${docker_container.kibana.ip_address}"
     name = "kibana"
     port = 5601

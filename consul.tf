@@ -75,5 +75,5 @@ resource "null_resource" "consul_provisioned" {
 		cluster_master = "${docker_container.consul.ip_address}"
     	cluster_servers = "${join(",", docker_container.consul_servers.*.ip_address)}"
   	}
-	depends_on = ["docker_container.consul", "docker_container.consul_servers"]//, "docker_container.consul_agents"]
+	depends_on = ["docker_container.consul", "docker_container.consul_servers"]
 }
