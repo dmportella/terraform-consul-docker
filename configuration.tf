@@ -1,76 +1,31 @@
 # Set an example kye in the key/value store
 provider "consul" {
-	address	= "${docker_container.consul.ip_address}:8500"
+	address	= "${null_resource.consul_provisioned.triggers["cluster_master"]}:8500"
 	datacenter = "dc1"
 	scheme	 = "http"
 }
 
-resource "consul_service" "elastic-01" {
-    depends_on = ["null_resource.consul_provisioned"]
-    address = "${docker_container.elastic.0.ip_address}"
-    name = "elastic-01"
+resource "consul_service" "elastic-single" {
+    count = "${var.elastic_count}"
+
+    address = "${element(docker_container.elastic.*.ip_address, count.index)}"
+    name = "elastic-${format("%02d", count.index+1)}"
     port = 9200
     tags = ["elastic"]
 }
 
-resource "consul_service" "elastic-02" {
-    depends_on = ["null_resource.consul_provisioned"]
-    address = "${docker_container.elastic.1.ip_address}"
-    name = "elastic-02"
-    port = 9200
-    tags = ["elastic"]
-}
+resource "consul_service" "elastic-cluster" {
+    count = "${var.elastic_count}"
 
-resource "consul_service" "elastic-03" {
-    depends_on = ["null_resource.consul_provisioned"]
-    address = "${docker_container.elastic.2.ip_address}"
-    name = "elastic-03"
-    port = 9200
-    tags = ["elastic"]
-}
+    service_id = "elastic-cluster-${format("%02d", count.index+1)}"
 
-resource "consul_service" "elastic-04" {
-    depends_on = ["null_resource.consul_provisioned"]
-    address = "${docker_container.elastic.3.ip_address}"
-    name = "elastic-04"
-    port = 9200
-    tags = ["elastic"]
-}
-
-resource "consul_service" "elastic-cluster-01" {
-    depends_on = ["null_resource.consul_provisioned"]
-    address = "${docker_container.elastic.0.ip_address}"
-    name = "elastic"
-    port = 9200
-    tags = ["elastic", "cluster"]
-}
-
-resource "consul_service" "elastic-cluster-02" {
-    depends_on = ["null_resource.consul_provisioned"]
-    address = "${docker_container.elastic.1.ip_address}"
-    name = "elastic"
-    port = 9200
-    tags = ["elastic", "cluster"]
-}
-
-resource "consul_service" "elastic-cluster-03" {
-    depends_on = ["null_resource.consul_provisioned"]
-    address = "${docker_container.elastic.2.ip_address}"
-    name = "elastic"
-    port = 9200
-    tags = ["elastic", "cluster"]
-}
-
-resource "consul_service" "elastic-cluster-04" {
-    depends_on = ["null_resource.consul_provisioned"]
-    address = "${docker_container.elastic.3.ip_address}"
+    address = "${element(docker_container.elastic.*.ip_address, count.index)}"
     name = "elastic"
     port = 9200
     tags = ["elastic", "cluster"]
 }
 
 resource "consul_service" "kibana" {
-    depends_on = ["null_resource.consul_provisioned"]
     address = "${docker_container.kibana.ip_address}"
     name = "kibana"
     port = 5601

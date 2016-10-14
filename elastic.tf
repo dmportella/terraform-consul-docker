@@ -1,6 +1,11 @@
+variable "elastic_count" {
+	type = "string"
+	default = "3"
+}
+
 # Create a container
 resource "docker_container" "elastic" {
-	count = 4
+	count = "${var.elastic_count}"
 	image = "${docker_image.elastic.name}"
 	
 	name = "elastic-${format("%02d", count.index+1)}"
@@ -42,8 +47,4 @@ output "elastic_2_ip" {
 
 output "elastic_3_ip" {
 	value = "${docker_container.elastic.2.ip_address}"
-}
-
-output "elastic_4_ip" {
-	value = "${docker_container.elastic.3.ip_address}"
 }

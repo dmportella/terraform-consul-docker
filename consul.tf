@@ -42,7 +42,6 @@ resource "docker_container" "consul" {
 }
 
 resource "docker_container" "consul_servers" {
-	depends_on = ["docker_container.consul"]
 	count = 3
 	image = "${docker_image.consul.name}"
 	name = "consul-server-${format("%02d", count.index+1)}"
@@ -73,7 +72,8 @@ output "consul_servers" {
 resource "null_resource" "consul_provisioned" {
 	triggers {
 		cluster_master = "${docker_container.consul.ip_address}"
-    	cluster_servers = "${join(",", docker_container.consul_servers.*.ip_address)}"
+    	cluster_servers = "${join(", ", docker_container.consul_servers.*.ip_address)}"
   	}
-	depends_on = ["docker_container.consul", "docker_container.consul_servers"]
+  	
+  	depends_on = ["docker_container.consul", "docker_container.consul_servers"]
 }
