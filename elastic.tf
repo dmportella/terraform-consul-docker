@@ -1,6 +1,6 @@
 variable "elastic_count" {
 	type = "string"
-	default = "3"
+	default = 3
 }
 
 # Create a container
