@@ -4,6 +4,10 @@ resource "docker_container" "backend" {
     image = "${docker_image.nginx.latest}"
     name = "website-${format("%02d", count.index+1)}"
 
+    dns = ["172.17.0.1"]
+
+	dns_search = ["service.consul"]
+
     volumes {
 		container_path  = "/usr/share/nginx/html"
 		host_path = "/home/dmportella/_workspaces/terraform/consul/website/"
@@ -16,6 +20,10 @@ resource "docker_container" "lb" {
 
     image = "${docker_image.nginx.latest}"
     name = "website-lb"
+
+    dns = ["172.17.0.1"]
+
+	dns_search = ["service.consul"]
 
     ports {
     	external = 9090

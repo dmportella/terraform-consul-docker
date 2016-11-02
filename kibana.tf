@@ -7,7 +7,9 @@ resource "docker_container" "kibana" {
 	restart = "always"
 	memory = 512
 
-	dns =["172.17.0.1"]
+	dns = ["172.17.0.1"]
+
+	dns_search = ["service.consul"]
 
 	env = ["ELASTICSEARCH_URL=http://elastic.service.consul:9200"]
 

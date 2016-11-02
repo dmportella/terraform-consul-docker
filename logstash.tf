@@ -11,6 +11,8 @@ resource "docker_container" "logstash" {
 
 	dns = ["172.17.0.1"]
 
+	dns_search = ["service.consul"]
+
 	labels {
 		type = "logstash"
 	}

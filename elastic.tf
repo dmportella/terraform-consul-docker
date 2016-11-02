@@ -16,6 +16,8 @@ resource "docker_container" "elastic" {
 
 	dns = ["172.17.0.1"]
 
+	dns_search = ["service.consul"]
+
 	labels {
 		type = "elastic"
 	}
