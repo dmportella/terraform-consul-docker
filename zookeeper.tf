@@ -28,12 +28,6 @@ resource "docker_container" "zookeeper" {
 		"ZOO_MY_ID=${count.index + 1}",
 		"ZOO_SERVERS=${join(" ", formatlist("%s=%s:2888:3888", keys(var.zookeeper_instances), values(var.zookeeper_instances)))}"
 	]
-
-	log_driver = "json-file"
-  	log_opts = {
-		max-size = "1m"
-		max-file = 2
-  	}
 }
 
 resource "consul_service" "zookeeper-single" {
