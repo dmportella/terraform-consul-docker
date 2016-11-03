@@ -1,6 +1,6 @@
 # Set an example kye in the key/value store
 provider "consul" {
-	address	= "${null_resource.consul_provisioned.triggers["cluster_master"]}:8500"
+	address	= "172.17.0.1:8500"
 	datacenter = "dc1"
 	scheme	 = "http"
 }
@@ -12,6 +12,8 @@ resource "consul_service" "elastic-single" {
     name = "elastic-${format("%02d", count.index+1)}"
     port = 9200
     tags = ["elastic"]
+
+    depends_on = ["docker_container.consul", "docker_container.consul_servers"]
 }
 
 resource "consul_service" "elastic-cluster" {
@@ -23,6 +25,8 @@ resource "consul_service" "elastic-cluster" {
     name = "elastic"
     port = 9200
     tags = ["elastic", "cluster"]
+
+    depends_on = ["docker_container.consul", "docker_container.consul_servers"]
 }
 
 resource "consul_service" "kibana" {
@@ -30,4 +34,6 @@ resource "consul_service" "kibana" {
     name = "kibana"
     port = 5601
     tags = ["kibana"]
+
+    depends_on = ["docker_container.consul", "docker_container.consul_servers"]
 }
