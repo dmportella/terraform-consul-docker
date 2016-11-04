@@ -33,6 +33,12 @@ resource "docker_container" "elastic" {
 		host_path = "/home/dmportella/_workspaces/terraform/consul/configs/elastic"
 		read_only = false
 	}
+
+	log_driver = "gelf"
+  	log_opts = {
+		gelf-address = "udp://${docker_container.logstash.ip_address}:3022"
+		tag = "elastic"
+  	}
 }
 
 resource "docker_image" "elastic" {

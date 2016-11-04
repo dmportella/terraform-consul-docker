@@ -21,6 +21,12 @@ resource "docker_container" "kibana" {
 	labels {
 		type = "kibana"
 	}
+
+	log_driver = "gelf"
+  	log_opts = {
+		gelf-address = "udp://${docker_container.logstash.ip_address}:3022"
+		tag = "kibana"
+  	}
 }
 
 resource "docker_image" "kibana" {
