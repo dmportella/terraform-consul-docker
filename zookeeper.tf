@@ -28,6 +28,12 @@ resource "docker_container" "zookeeper" {
 		"ZOO_MY_ID=${count.index + 1}",
 		"ZOO_SERVERS=${join(" ", formatlist("%s=%s:2888:3888", keys(var.zookeeper_instances), values(var.zookeeper_instances)))}"
 	]
+
+	log_driver = "gelf"
+	log_opts = {
+		gelf-address = "udp://${docker_container.logstash.ip_address}:3022"
+		tag = "zookeeper"
+	}
 }
 
 resource "consul_service" "zookeeper-single" {
@@ -37,6 +43,8 @@ resource "consul_service" "zookeeper-single" {
     name = "zookeeper-${format("%02d", count.index + 1)}"
     port = 2888
     tags = ["zookeeper"]
+
+    depends_on = ["docker_container.consul", "docker_container.consul_servers"]
 }
 
 resource "consul_service" "zookeeper-cluster" {
@@ -48,4 +56,10 @@ resource "consul_service" "zookeeper-cluster" {
     name = "zookeeper"
     port = 2888
     tags = ["zookeeper", "cluster"]
+
+    depends_on = ["docker_container.consul", "docker_container.consul_servers"]
+}
+
+output "zookeeper_servers" {
+	value = "${join(",", docker_container.zookeeper.*.ip_address)}"
 }

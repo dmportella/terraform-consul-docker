@@ -12,7 +12,6 @@ resource "docker_container" "elastic" {
 	hostname = "elastic-${format("%02d", count.index+1)}"
 
 	restart = "always"
-	memory = 512
 
 	dns = ["172.17.0.1"]
 
@@ -45,14 +44,30 @@ resource "docker_image" "elastic" {
 	name = "elasticsearch:2.4.1"
 }
 
-output "elastic_1_ip" {
-	value = "${docker_container.elastic.0.ip_address}"
+resource "consul_service" "elastic-single" {
+    count = "${var.elastic_count}"
+
+    address = "${element(docker_container.elastic.*.ip_address, count.index)}"
+    name = "elastic-${format("%02d", count.index+1)}"
+    port = 9200
+    tags = ["elastic"]
+
+    depends_on = ["docker_container.consul", "docker_container.consul_servers"]
 }
 
-output "elastic_2_ip" {
-	value = "${docker_container.elastic.1.ip_address}"
+resource "consul_service" "elastic-cluster" {
+    count = "${var.elastic_count}"
+
+    service_id = "elastic-cluster-${format("%02d", count.index+1)}"
+
+    address = "${element(docker_container.elastic.*.ip_address, count.index)}"
+    name = "elastic"
+    port = 9200
+    tags = ["elastic", "cluster"]
+
+    depends_on = ["docker_container.consul", "docker_container.consul_servers"]
 }
 
-output "elastic_3_ip" {
-	value = "${docker_container.elastic.2.ip_address}"
+output "elastic_servers" {
+	value = "${join(",", docker_container.elastic.*.ip_address)}"
 }

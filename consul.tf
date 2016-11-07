@@ -39,6 +39,12 @@ resource "docker_container" "consul" {
 	}
 
 	command = ["agent", "-server", "-client=0.0.0.0", "-bind=0.0.0.0", "-ui", "-bootstrap-expect=1"]
+
+	log_driver = "gelf"
+	log_opts = {
+		gelf-address = "udp://${docker_container.logstash.ip_address}:3022"
+		tag = "consul"
+	}
 }
 
 resource "docker_container" "consul_servers" {
@@ -55,6 +61,12 @@ resource "docker_container" "consul_servers" {
 	memory = 512
 
 	command = ["agent", "-server", "-join=${docker_container.consul.ip_address}", "-retry-join=${docker_container.consul.ip_address}"]
+
+	log_driver = "gelf"
+	log_opts = {
+		gelf-address = "udp://${docker_container.logstash.ip_address}:3022"
+		tag = "consul"
+	}
 }
 
 resource "docker_image" "consul" {

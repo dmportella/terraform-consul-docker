@@ -5,8 +5,7 @@ resource "docker_container" "kibana" {
 	name = "kibana"
 
 	restart = "always"
-	memory = 512
-
+	
 	dns = ["172.17.0.1"]
 
 	dns_search = ["service.consul"]
@@ -23,14 +22,23 @@ resource "docker_container" "kibana" {
 	}
 
 	log_driver = "gelf"
-  	log_opts = {
+	log_opts = {
 		gelf-address = "udp://${docker_container.logstash.ip_address}:3022"
 		tag = "kibana"
-  	}
+	}
 }
 
 resource "docker_image" "kibana" {
 	name = "kibana:4.5.1"
+}
+
+resource "consul_service" "kibana" {
+    address = "${docker_container.kibana.ip_address}"
+    name = "kibana"
+    port = 5601
+    tags = ["kibana"]
+
+    depends_on = ["docker_container.consul", "docker_container.consul_servers"]
 }
 
 output "kibana_ip" {

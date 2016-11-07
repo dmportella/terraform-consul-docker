@@ -13,6 +13,12 @@ resource "docker_container" "backend" {
 		host_path = "/home/dmportella/_workspaces/terraform/consul/website/"
 		read_only = true
 	}
+
+	log_driver = "gelf"
+	log_opts = {
+		gelf-address = "udp://${docker_container.logstash.ip_address}:3022"
+		tag = "nginx-backend"
+	}
 }
 
 resource "docker_container" "lb" {
@@ -39,7 +45,7 @@ resource "docker_container" "lb" {
 	log_driver = "gelf"
   	log_opts = {
 		gelf-address = "udp://${docker_container.logstash.ip_address}:3022"
-		tag = "nginx"
+		tag = "nginx-lb"
   	}
 }
 
@@ -47,7 +53,7 @@ resource "docker_image" "nginx" {
     name = "nginx:1.11.1"
 }
 
-resource "null_resource" "cassandra_provisioned" {
+resource "null_resource" "nginx_provisioned" {
 	depends_on = ["docker_container.backend", "docker_container.lb"]
 	
 	provisioner "local-exec" {
@@ -66,4 +72,12 @@ data "template_file" "nginx_config" {
     vars {
         upstream_list = "${join(",", docker_container.backend.*.ip_address)}"
     }
+}
+
+output "nginx_servers" {
+	value = "${join(",", docker_container.backend.*.ip_address)}"
+}
+
+output "nginx_lb_server" {
+	value = "${join(",", docker_container.lb.ip_address)}"
 }

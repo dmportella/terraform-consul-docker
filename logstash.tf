@@ -7,7 +7,6 @@ resource "docker_container" "logstash" {
 	hostname = "logstash-${format("%02d", count.index+1)}"
 
 	restart = "always"
-	memory = 512
 
 	dns = ["172.17.0.1"]
 
