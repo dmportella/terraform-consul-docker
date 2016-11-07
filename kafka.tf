@@ -56,3 +56,14 @@ resource "consul_service" "zafka-cluster" {
 output "kafka_servers" {
 	value = "${join(",", docker_container.zafka.*.ip_address)}"
 }
+
+/*docker run --rm ches/kafka kafka-topics.sh --create --topic test --replication-factor 1 --partitions 1 --zookeeper 172.17.0.6:2181
+Created topic "test".
+
+# In separate terminals:
+$ docker run --rm --interactive ches/kafka kafka-console-producer.sh --topic test --broker-list 172.17.0.19:9092
+<type some messages followed by newline>
+
+$ docker run --rm ches/kafka kafka-console-consumer.sh --topic test --from-beginning --zookeeper 172.17.0.6:2181
+
+*/
