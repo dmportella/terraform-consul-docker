@@ -31,7 +31,7 @@ resource "docker_container" "zookeeper" {
 
 	log_driver = "gelf"
 	log_opts = {
-		gelf-address = "udp://${docker_container.logstash.ip_address}:3022"
+		gelf-address = "udp://172.17.0.1:3022"
 		tag = "zookeeper"
 	}
 }
