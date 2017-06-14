@@ -48,7 +48,7 @@ resource "docker_container" "consul" {
 }
 
 resource "docker_container" "consul_servers" {
-	count = 3
+	count = 1
 	image = "${docker_image.consul.name}"
 	name = "consul-server-${format("%02d", count.index+1)}"
 	hostname = "consul-server-${format("%02d", count.index+1)}"

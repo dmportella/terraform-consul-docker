@@ -23,21 +23,21 @@ resource "docker_container" "elastic" {
 
 	volumes {
 		container_path  = "/usr/share/elasticsearch/data"
-		host_path = "/home/dmportella/_workspaces/terraform/consul/data/elastic/data.${format("%d", count.index+1)}"
+		host_path = "/home/dmportella/_workspaces/terraform/terraform-consul-docker/data/elastic/data.${format("%d", count.index+1)}"
 		read_only = false
 	}
 
 	volumes {
 		container_path  = "/usr/share/elasticsearch/config"
-		host_path = "/home/dmportella/_workspaces/terraform/consul/configs/elastic"
+		host_path = "/home/dmportella/_workspaces/terraform/terraform-consul-docker/configs/elastic"
 		read_only = false
 	}
 
-	log_driver = "gelf"
+	/*log_driver = "gelf"
   	log_opts = {
 		gelf-address = "udp://172.17.0.1:3022"
 		tag = "elastic"
-  	}
+  	}*/
 }
 
 resource "docker_image" "elastic" {

@@ -53,7 +53,7 @@ resource "docker_container" "logstash" {
 
 	volumes {
 		container_path  = "/config-dir"
-		host_path = "/home/dmportella/_workspaces/terraform/consul/configs/logstash/"
+		host_path = "/home/dmportella/_workspaces/terraform/terraform-consul-docker/configs/logstash/"
 		read_only = true
 	}
 

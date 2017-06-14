@@ -1,5 +1,5 @@
 resource "docker_image" "zafka" {
-    name = "ches/kafka:0.10.1.0"
+    name = "ches/kafka:0.10.2.0"
 }
 
 resource "docker_container" "zafka" {
@@ -21,12 +21,12 @@ resource "docker_container" "zafka" {
 		"KAFKA_BROKER_ID=${count.index + 1}",
 		"ZOOKEEPER_CONNECTION_STRING=${join(",", formatlist("%s.service.consul:2181", values(var.zookeeper_instances)))}"
 	]
-
+/*
 	log_driver = "gelf"
 	log_opts = {
 		gelf-address = "udp://172.17.0.1:3022"
 		tag = "kafka"
-	}
+	}*/
 }
 
 resource "consul_service" "zafka-single" {
