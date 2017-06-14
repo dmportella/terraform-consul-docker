@@ -41,7 +41,7 @@ resource "docker_container" "elastic" {
 }
 
 resource "docker_image" "elastic" {
-	name = "elasticsearch:2.4.1"
+	name = "docker.elastic.co/elasticsearch/elasticsearch:5.4.1"
 }
 
 resource "consul_service" "elastic-single" {

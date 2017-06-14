@@ -6,11 +6,9 @@ resource "docker_container" "kibana" {
 
 	restart = "always"
 	
-	dns = ["172.17.0.1"]
+	dns = ["172.17.0.1", "8.8.8.8"]
 
 	dns_search = ["service.consul"]
-
-	env = ["ELASTICSEARCH_URL=http://elastic.service.consul:9200"]
 
 	ports {
 		internal = 5601
@@ -21,6 +19,12 @@ resource "docker_container" "kibana" {
 		type = "kibana"
 	}
 
+	volumes {
+		container_path  = "/usr/share/kibana/config"
+		host_path = "/home/dmportella/_workspaces/terraform/consul/configs/kibana"
+		read_only = true
+	}
+
 	log_driver = "gelf"
 	log_opts = {
 		gelf-address = "udp://172.17.0.1:3022"
@@ -29,7 +33,7 @@ resource "docker_container" "kibana" {
 }
 
 resource "docker_image" "kibana" {
-	name = "kibana:4.5.1"
+	name = "docker.elastic.co/kibana/kibana:5.4.1"
 }
 
 resource "consul_service" "kibana" {

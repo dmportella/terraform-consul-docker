@@ -8,9 +8,15 @@ resource "docker_container" "logstash" {
 
 	restart = "always"
 
-	dns = ["172.17.0.1"]
+	dns = ["172.17.0.1", "8.8.8.8"]
 
 	dns_search = ["service.consul"]
+
+	ports {
+		internal = 5044
+		external = 5044
+		ip = "172.17.0.1"
+	}
 
 	ports {
 		internal = 3018
@@ -52,16 +58,20 @@ resource "docker_container" "logstash" {
 	}
 
 	volumes {
-		container_path  = "/config-dir"
-		host_path = "/home/dmportella/_workspaces/terraform/consul/configs/logstash/"
+		container_path  = "/usr/share/logstash/pipeline/"
+		host_path = "/home/dmportella/_workspaces/terraform/consul/configs/logstash/pipeline"
 		read_only = true
 	}
 
-	command = ["logstash", "-f", "/config-dir/logstash.config"]
+	volumes {
+		container_path  = "/usr/share/logstash/config/"
+		host_path = "/home/dmportella/_workspaces/terraform/consul/configs/logstash/settings"
+		read_only = true
+	}
 }
 
 resource "docker_image" "logstash" {
-	name = "logstash:2.4.0"
+	name = "docker.elastic.co/logstash/logstash:5.2.2"
 }
 
 output "logstash_ip" {

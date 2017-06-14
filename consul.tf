@@ -70,7 +70,7 @@ resource "docker_container" "consul_servers" {
 }
 
 resource "docker_image" "consul" {
-	name = "consul:0.7.0"
+	name = "consul:0.8.4"
 }
 
 output "consul_master_ip" {
